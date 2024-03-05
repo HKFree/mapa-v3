@@ -1,0 +1,10 @@
+config.php
+
+composer.phar
+/vendor/
+
+.idea
+.DS_Store
+
+!.gitignore
+!.htaccess
