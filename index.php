@@ -29,6 +29,11 @@
       width: 100%;
       height: 100%;
     }
+    .point-name {
+      /* nice shadow generator: https://owumaro.github.io/text-stroke-generator/ */
+      color: black;
+      text-shadow: rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.75517px 0.958851px 0px, rgb(255, 255, 255) 1.0806px 1.68294px 0px, rgb(255, 255, 255) 0.141474px 1.99499px 0px, rgb(255, 255, 255) -0.832294px 1.81859px 0px, rgb(255, 255, 255) -1.60229px 1.19694px 0px, rgb(255, 255, 255) -1.97999px 0.28224px 0px, rgb(255, 255, 255) -1.87291px -0.701566px 0px, rgb(255, 255, 255) -1.30729px -1.51361px 0px, rgb(255, 255, 255) -0.421592px -1.95506px 0px, rgb(255, 255, 255) 0.567324px -1.91785px 0px, rgb(255, 255, 255) 1.41734px -1.41108px 0px, rgb(255, 255, 255) 1.92034px -0.558831px 0px;
+    }
   </style>
 </head>
 <body>
@@ -98,15 +103,34 @@
         //   .addTo(map)
         m = L.marker(souradnice, {icon: new L.DivIcon({
           className: 'my-div-icon',
-          html: '<img class="my-div-image" style="display: table; margin: 0 auto;" src="icons/node_2_1.png"/>'+
-                '<span class="my-div-span" style="display: table; margin: 0 auto;">'+ap["jmeno"]+'</span>',
-          iconSize: [80, 36],
-          iconAnchor: [40, 30]
+          html: '<img class="point-image" style="display: table; margin: 0 auto;" src="icons/node_2_1.png"/>'+
+                '<span class="point-name" style="display: table; margin: 0 auto;">'+ap["jmeno"]+'</span>',
+          iconSize: [120, 36],
+          iconAnchor: [60, 30]
         })}).addTo(map);
         mapMarkers.push(m);
       });
     });
+    $(".point-name").hide(0);
   });
+
+var pointsHidden = 1;
+
+map.on('zoomend', function(ev) {
+    var zoom = ev.target.getZoom();
+    if(zoom > 14) {
+      if(pointsHidden == 1) {
+        pointsHidden = 0;
+        $(".point-name").fadeIn(duration=400);
+      }
+    } else {
+      if(pointsHidden == 0) {
+        pointsHidden = 1;
+        $(".point-name").fadeOut(duration=400);
+      }
+    }
+});
+
 </script>
 
 </body>
