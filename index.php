@@ -20,6 +20,9 @@
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
 
+  <link rel="stylesheet" href="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.css" />
+  <script src="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.js"></script>
+
   <style>
     html, body {
       height: 100%;
@@ -75,8 +78,8 @@
 
   L.control.scale ({maxWidth:200, metric:true, imperial:false, position: 'bottomleft'}).addTo (map);
 
-  //let polylineMeasure = L.control.polylineMeasure ({position:'topleft', unit:'metres', showBearings:true, clearMeasurementsOnStop: false, showClearControl: true, showUnitControl: false})
-  //polylineMeasure.addTo (map);
+  let polylineMeasure = L.control.polylineMeasure ({position:'topleft', unit:'metres', showBearings:true, clearMeasurementsOnStop: false, showClearControl: true, showUnitControl: false})
+  polylineMeasure.addTo (map);
 
   var baseLayers = {
   //  "Wikimedia maps": wm,
