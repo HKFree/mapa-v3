@@ -37,6 +37,11 @@
       color: black;
       text-shadow: rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.75517px 0.958851px 0px, rgb(255, 255, 255) 1.0806px 1.68294px 0px, rgb(255, 255, 255) 0.141474px 1.99499px 0px, rgb(255, 255, 255) -0.832294px 1.81859px 0px, rgb(255, 255, 255) -1.60229px 1.19694px 0px, rgb(255, 255, 255) -1.97999px 0.28224px 0px, rgb(255, 255, 255) -1.87291px -0.701566px 0px, rgb(255, 255, 255) -1.30729px -1.51361px 0px, rgb(255, 255, 255) -0.421592px -1.95506px 0px, rgb(255, 255, 255) 0.567324px -1.91785px 0px, rgb(255, 255, 255) 1.41734px -1.41108px 0px, rgb(255, 255, 255) 1.92034px -0.558831px 0px;
     }
+    .point-flex {
+      display: flex;
+      flex-flow: column;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
@@ -95,24 +100,26 @@
 
   $.getJSON( "proxy.php", function( oblasti ) {
     $.each( oblasti, function( key, oblast ) {
-      //console.log(val);
       $.each( oblast["aps"], function ( key2, ap ) {
         if(!ap["gps"]) {
           return;
         }
         souradnice = ap["gps"].split(",");
-        console.log(souradnice);
-        //m = L.circleMarker(souradnice)
-        //   .addTo(map)
+
         m = L.marker(souradnice, {icon: new L.DivIcon({
-          className: 'my-div-icon',
-          html: '<img class="point-image" style="display: table; margin: 0 auto;" src="icons/node_2_1.png"/>'+
-                '<span class="point-name" style="display: table; margin: 0 auto;">'+ap["jmeno"]+'</span>',
-          iconSize: [120, 36],
-          iconAnchor: [60, 30]
+          className: 'point-flex',
+          html: '<img class="point-image" src="icons/node_2_1.png"/>'+
+                '<span class="point-name" style="width: max-content;">'+ap["jmeno"]+'</span>',
+          iconSize: [30, 36],
+          iconAnchor: [15, 28]
         })}).addTo(map);
+
+        omail = "oblast" + this["id"] + "@hkfree.org";
+        ospravci = Object.values(this["admins"]).map((ele) => ele["nick"]).join(", ");
+        m.bindPopup('<b>' + ap["jmeno"] + '</b><br>Správci: ' + ospravci + '<br>Kontakt: <a href="mailto:' + omail + '">' + omail + '</a>');
+
         mapMarkers.push(m);
-      });
+      }.bind(oblast));
     });
     $(".point-name").hide(0);
   });
