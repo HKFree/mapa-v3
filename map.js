@@ -97,7 +97,8 @@
       layers: [layers[initialState.layer]]
     });
 
-    L.control.scale({maxWidth: 200, metric: true, imperial: false, position: 'bottomleft'}).addTo(map);
+    const scale = L.control.scale({maxWidth: 200, metric: true, imperial: false, position: 'bottomleft'}).addTo(map);
+    avoidScaleOverlap(map, scale);
     L.control.polylineMeasure({
       position: 'topleft',
       unit: 'metres',
@@ -116,6 +117,34 @@
     addLogo(map);
     syncUrlState(map, layers, initialState);
     return map;
+  }
+
+  function avoidScaleOverlap(map, scale) {
+    const element = scale.getContainer();
+    const attribution = map.attributionControl.getContainer();
+    let lift = 0;
+
+    function updatePosition() {
+      const scaleRect = element.getBoundingClientRect();
+      const attributionRect = attribution.getBoundingClientRect();
+      const overlapsHorizontally = scaleRect.right + 6 > attributionRect.left &&
+        scaleRect.left < attributionRect.right + 6;
+      // Add the current lift back to measure the scale's original bottom position.
+      const nextLift = overlapsHorizontally
+        ? Math.ceil(Math.max(0, scaleRect.bottom + lift - attributionRect.top + 6))
+        : 0;
+      if (nextLift !== lift) {
+        lift = nextLift;
+        element.style.transform = lift ? `translateY(-${lift}px)` : '';
+      }
+    }
+
+    const observer = new ResizeObserver(updatePosition);
+    observer.observe(map.getContainer());
+    observer.observe(attribution);
+    observer.observe(element);
+    map.once('unload', () => observer.disconnect());
+    updatePosition();
   }
 
   function addLogo(map) {

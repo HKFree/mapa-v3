@@ -20,6 +20,7 @@
 - Logo je lokálně v `icons/hkfree-logo-druzstvo.png`, jako první ovládací prvek vlevo nahoře nad zoomem a měřením. Na šířkách do 600 px se po dvou sekundách plynule skryje a uvolní místo ovládání, na větších zůstává viditelné. Překryv nesmí blokovat ovládání mapy.
 - Bílé zvýraznění ikon a popisků zobrazuj pouze na podkladu Mapbox Satellite pomocí třídy `satellite-map`. Stín ikony má sledovat neprůhledné pixely (`drop-shadow`), nikoli vyplňovat průhledné pozadí obrázku.
 - Credits přiřazuj jednotlivým podkladovým vrstvám přes `attribution`; Leaflet je přepíná s aktivním podkladem. U Mapboxu zachovej i OpenStreetMap a odkaz Improve this map; patičku udržuj stručnou pro mobil.
+- Měřítko se při vodorovném překrytí s credits zvedá nad jejich skutečnou výšku s mezerou 6 px. Přepočítává se i při změně podkladu, zoomu a velikosti okna; na široké mapě zůstává dole.
 - URL ukládá pohled a podklad jako `#map=zoom/lat/lng&layer=streets` (podklady: `osm`, `streets`, `satellite`, `light`). Aktualizuj ji přes `replaceState`, aby posuny nezaplňovaly historii; parametry před použitím ověřuj.
 - Parametr `layer` přidej až po změně podkladu uživatelem, nebo pokud už byl platně uveden v otevřeném odkazu. Samotné načtení, posun či zoom jej nepřidává.
 - Zoom může být desetinný (`zoomSnap: 0.01`), což umožňuje těsný úvodní výřez. Zachovej desetinný zoom i při ukládání a obnovování URL. Odsazení výřezu počítá také s velikostí a ukotvením značek.
