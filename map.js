@@ -48,6 +48,46 @@
     return map;
   }
 
+  function createMarkerContent(name) {
+    const content = document.createElement('div');
+    const image = document.createElement('img');
+    image.className = 'point-image';
+    image.src = 'icons/node_2_1.png';
+    image.alt = '';
+
+    const label = document.createElement('span');
+    label.className = 'point-name';
+    label.textContent = name;
+
+    content.append(image, label);
+    return content;
+  }
+
+  function createPopupContent(area, name) {
+    const content = document.createElement('div');
+    const title = document.createElement('b');
+    title.textContent = name;
+
+    const admins = Object.values(area.admins);
+    const adminDescription = admins.length > 0
+      ? 'Správci: ' + admins.map(admin => admin.nick).join(', ')
+      : 'Oblast nemá správce.';
+
+    const contact = document.createElement('a');
+    contact.href = 'mailto:' + area.email;
+    contact.textContent = area.email;
+
+    content.append(
+      title,
+      document.createElement('br'),
+      document.createTextNode(adminDescription),
+      document.createElement('br'),
+      document.createTextNode('Kontakt: '),
+      contact
+    );
+    return content;
+  }
+
   function createMarker(map, area, accessPoint) {
     if (!accessPoint.gps) {
       return;
@@ -57,21 +97,13 @@
     const marker = L.marker(coordinates, {
       icon: new L.DivIcon({
         className: 'point-flex',
-        html: '<img class="point-image" src="icons/node_2_1.png"/>' +
-          '<span class="point-name">' + accessPoint.jmeno + '</span>',
+        html: createMarkerContent(accessPoint.jmeno),
         iconSize: [30, 36],
         iconAnchor: [15, 28]
       })
     }).addTo(map);
 
-    const email = area.email;
-    const admins = Object.values(area.admins);
-    const adminDescription = admins.length > 0
-      ? 'Správci: ' + admins.map(admin => admin.nick).join(', ')
-      : 'Oblast nemá správce.';
-
-    marker.bindPopup('<b>' + accessPoint.jmeno + '</b><br>' + adminDescription +
-      '<br>Kontakt: <a href="mailto:' + email + '">' + email + '</a>');
+    marker.bindPopup(createPopupContent(area, accessPoint.jmeno));
   }
 
   function updateLabelVisibility(map) {
