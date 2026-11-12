@@ -24,3 +24,9 @@
 - Zoom může být desetinný (`zoomSnap: 0.01`), což umožňuje těsný úvodní výřez. Zachovej desetinný zoom i při ukládání a obnovování URL. Odsazení výřezu počítá také s velikostí a ukotvením značek.
 - Po prvním načtení bodů nastav výřez přes `fitBounds`, pouze pokud odkaz neobsahuje platný pohled a uživatel se mezitím nepohnul mapou. Zahrň všechny vytvořené značky s odsazením od okrajů. Při prázdných datech zachovej výchozí výřez; u jediného bodu omez přiblížení na zoom 16.
 - `proxy.php` vrací pouze veřejná pole: oblast má `email`, `aps` (jen `jmeno`, `gps`) a `admins` (jen `nick`). Pole vytvářej explicitně a seznamy přečísluj, aby neunikala interní ID ani v klíčích. Body bez GPS a oblasti bez zobrazitelných bodů vynechávej.
+
+## Testy
+
+- Serverové integrační testy spusť přes `composer test` (nebo `php tests/run.php` po `composer install`). Vyžadují PHP CLI, `proc_open`, lokální TCP sockety a podporu symlinků; nepřidávají další závislosti.
+- Testy spouštějí vlastní dočasné PHP servery a lokální náhradu UserDB. Používají syntetickou `.env`, nečtou skutečné přihlašovací údaje a nevolají externí API. Nesmí měnit pracovní `.env` ani zastavovat vývojový server.
+- Prohlížečové testy zatím nepřidávej; uživatel požaduje pouze serverové testy.
