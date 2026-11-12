@@ -68,20 +68,16 @@
   }
 
   function createMap(initialState) {
-    const bkAttr = ' | Written by <a href="mailto:bkralik@hkfree.org">bkralik</a>';
-
-
-
-    const mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-        '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-        'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>' + bkAttr;
+    const bkAttr = ' | <a href="mailto:bkralik@hkfree.org" title="Autor mapy">bkralik</a>';
+    const osmCredits = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+    const mbAttr = '&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a> | ' +
+      osmCredits + ' | <a href="https://apps.mapbox.com/feedback/">Improve this map</a>' + bkAttr;
     const {mapboxToken} = JSON.parse(document.getElementById('map-config').textContent);
     const mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' +
       encodeURIComponent(mapboxToken);
 
 
-    const osmAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-        '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>' + bkAttr;
+    const osmAttr = osmCredits + bkAttr;
 
     const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 

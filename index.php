@@ -13,7 +13,7 @@ try {
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <title>HKFree.org integrovaná mapa</title>
+  <title>HKFree.org mapa</title>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
