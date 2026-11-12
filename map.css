@@ -1,0 +1,42 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+#map {
+  width: 100%;
+  height: 100%;
+}
+.point-name {
+  /* nice shadow generator: https://owumaro.github.io/text-stroke-generator/ */
+  color: black;
+  text-shadow: rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.75517px 0.958851px 0px, rgb(255, 255, 255) 1.0806px 1.68294px 0px, rgb(255, 255, 255) 0.141474px 1.99499px 0px, rgb(255, 255, 255) -0.832294px 1.81859px 0px, rgb(255, 255, 255) -1.60229px 1.19694px 0px, rgb(255, 255, 255) -1.97999px 0.28224px 0px, rgb(255, 255, 255) -1.87291px -0.701566px 0px, rgb(255, 255, 255) -1.30729px -1.51361px 0px, rgb(255, 255, 255) -0.421592px -1.95506px 0px, rgb(255, 255, 255) 0.567324px -1.91785px 0px, rgb(255, 255, 255) 1.41734px -1.41108px 0px, rgb(255, 255, 255) 1.92034px -0.558831px 0px;
+}
+.point-flex {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+
+.point-name {
+  width: max-content;
+  opacity: 0;
+  transition: opacity 400ms;
+}
+
+.show-point-names .point-name {
+  opacity: 1;
+}
+
+.map-error {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  max-width: 70%;
+  padding: 12px;
+  background: white;
+  color: #a00;
+  border: 1px solid #a00;
+  border-radius: 4px;
+}
