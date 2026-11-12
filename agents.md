@@ -17,6 +17,7 @@
 - Mapbox token je veřejný prohlížečový token. Nastavuj ho v `.env` nebo prostředí, ne ve zdrojovém kódu. `index.php` předává JavaScriptu pouze tento token přes bezpečně zakódovaný JSON v `#map-config`; údaje UserDB do HTML nepatří.
 - Vývojový server vždy spouštěj s `router.php`, aby nevydával `.env` a další neveřejné soubory. Apache používá přiložený `.htaccess`; u jiného serveru nastav odpovídající zákaz přístupu.
 - jQuery prozatím zachovej. Údaje z API v popiscích a popupech vkládej přes DOM (`textContent`, `createTextNode`), nikoli spojováním HTML řetězců. Odkazy sestavuj přes DOM s pevným schématem `mailto:`.
+- Logo je lokálně v `icons/hkfree-logo-druzstvo.png`, jako první ovládací prvek vlevo nahoře nad zoomem a měřením. Na šířkách do 600 px se po dvou sekundách plynule skryje a uvolní místo ovládání, na větších zůstává viditelné. Překryv nesmí blokovat ovládání mapy.
 - Bílé zvýraznění ikon a popisků zobrazuj pouze na podkladu Mapbox Satellite pomocí třídy `satellite-map`. Stín ikony má sledovat neprůhledné pixely (`drop-shadow`), nikoli vyplňovat průhledné pozadí obrázku.
 - URL ukládá pohled a podklad jako `#map=zoom/lat/lng&layer=streets` (podklady: `osm`, `streets`, `satellite`, `light`). Aktualizuj ji přes `replaceState`, aby posuny nezaplňovaly historii; parametry před použitím ověřuj.
 - Parametr `layer` přidej až po změně podkladu uživatelem, nebo pokud už byl platně uveden v otevřeném odkazu. Samotné načtení, posun či zoom jej nepřidává.

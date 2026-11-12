@@ -47,6 +47,41 @@ html, body {
   filter: blur(3px);
 }
 
+.map-logo {
+  box-sizing: border-box;
+  width: min(268px, calc(100vw - 80px));
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+}
+
+.map-logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes hide-map-logo {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 600px) {
+  .map-logo {
+    animation: hide-map-logo 600ms ease 2s forwards;
+  }
+}
+
+@media (max-width: 600px) and (prefers-reduced-motion: reduce) {
+  .map-logo {
+    animation-duration: 1ms;
+  }
+}
+
 .map-error {
   position: absolute;
   top: 12px;

@@ -117,8 +117,26 @@
       'MapBox Light': mapboxLight
     }).addTo(map);
 
+    addLogo(map);
     syncUrlState(map, layers, initialState);
     return map;
+  }
+
+  function addLogo(map) {
+    const element = document.querySelector('.map-logo');
+    const control = L.control({position: 'topleft'});
+    control.onAdd = () => element;
+    control.addTo(map);
+    element.parentElement.prepend(element);
+
+    element.addEventListener('animationend', event => {
+      if (event.animationName === 'hide-map-logo') {
+        element.hidden = true;
+      }
+    });
+    window.matchMedia('(max-width: 600px)').addEventListener('change', () => {
+      element.hidden = false;
+    });
   }
 
   function createMarkerContent(name) {

@@ -39,6 +39,9 @@ try {
 </head>
 <body>
 <div id="map"></div>
+<div class="map-logo">
+  <img src="icons/hkfree-logo-druzstvo.png" width="330" height="80" alt="hkfree.org – internetové družstvo">
+</div>
 <div id="map-error" class="map-error" role="alert" hidden></div>
 
 <script id="map-config" type="application/json"><?= json_encode(
