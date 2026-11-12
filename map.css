@@ -27,6 +27,26 @@ html, body {
   opacity: 1;
 }
 
+.satellite-map .point-image {
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 1));
+}
+
+.satellite-map .point-name {
+  position: relative;
+  isolation: isolate;
+}
+
+.satellite-map .point-name::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  inset: -1px -4px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  filter: blur(3px);
+}
+
 .map-error {
   position: absolute;
   top: 12px;

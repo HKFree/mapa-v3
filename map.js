@@ -32,6 +32,10 @@
       layers: [mapbox]
     });
 
+    map.on('baselayerchange', event => {
+      map.getContainer().classList.toggle('satellite-map', event.layer === mapboxSatellite);
+    });
+
     L.control.scale({maxWidth: 200, metric: true, imperial: false, position: 'bottomleft'}).addTo(map);
     L.control.polylineMeasure({
       position: 'topleft',

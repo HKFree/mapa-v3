@@ -17,4 +17,5 @@
 - Mapbox token je veřejný prohlížečový token. Nastavuj ho v `.env` nebo prostředí, ne ve zdrojovém kódu. `index.php` předává JavaScriptu pouze tento token přes bezpečně zakódovaný JSON v `#map-config`; údaje UserDB do HTML nepatří.
 - Vývojový server vždy spouštěj s `router.php`, aby nevydával `.env` a další neveřejné soubory. Apache používá přiložený `.htaccess`; u jiného serveru nastav odpovídající zákaz přístupu.
 - jQuery prozatím zachovej. Údaje z API v popiscích a popupech vkládej přes DOM (`textContent`, `createTextNode`), nikoli spojováním HTML řetězců. Odkazy sestavuj přes DOM s pevným schématem `mailto:`.
+- Bílé zvýraznění ikon a popisků zobrazuj pouze na podkladu Mapbox Satellite pomocí třídy `satellite-map`. Stín ikony má sledovat neprůhledné pixely (`drop-shadow`), nikoli vyplňovat průhledné pozadí obrázku.
 - `proxy.php` vrací pouze veřejná pole: oblast má `email`, `aps` (jen `jmeno`, `gps`) a `admins` (jen `nick`). Pole vytvářej explicitně a seznamy přečísluj, aby neunikala interní ID ani v klíčích. Body bez GPS a oblasti bez zobrazitelných bodů vynechávej.
