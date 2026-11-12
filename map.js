@@ -178,7 +178,7 @@
           });
         });
         if (shouldFitBounds() && bounds.isValid()) {
-          map.fitBounds(bounds, {padding: [40, 40], maxZoom: 16, animate: false});
+          map.fitBounds(bounds, {padding: [20, 20], maxZoom: 16, animate: false});
         }
         updateLabelVisibility(map);
       })
