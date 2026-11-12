@@ -6,6 +6,39 @@ html, body {
   width: 100%;
   height: 100%;
 }
+
+.leaflet-bar .map-home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 0 0 4px 4px;
+  background: white;
+  color: #333;
+  cursor: pointer;
+}
+
+.leaflet-touch .leaflet-bar .map-home {
+  width: 30px;
+  height: 30px;
+}
+
+.leaflet-bar .map-home:hover {
+  background: #f4f4f4;
+}
+
+.leaflet-bar .map-home:focus-visible {
+  outline: 2px solid #3388ff;
+  outline-offset: -2px;
+}
+
+.leaflet-bar .map-home:disabled {
+  color: #bbb;
+  cursor: default;
+}
 .point-name {
   /* nice shadow generator: https://owumaro.github.io/text-stroke-generator/ */
   color: black;

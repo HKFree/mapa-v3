@@ -3,6 +3,8 @@
 
   const LABEL_ZOOM_THRESHOLD = 14;
   const MAX_ZOOM = 18;
+  const DEFAULT_CENTER = [50.2093261, 15.8333789];
+  const DEFAULT_ZOOM = 12;
   const LAYER_KEYS = ['osm', 'streets', 'satellite', 'light'];
 
   function readUrlState() {
@@ -89,8 +91,8 @@
 
     const map = L.map('map', {
       preferCanvas: true,
-      center: initialState.view ? initialState.view.center : [50.2093261, 15.8333789],
-      zoom: initialState.view ? initialState.view.zoom : 12,
+      center: initialState.view ? initialState.view.center : DEFAULT_CENTER,
+      zoom: initialState.view ? initialState.view.zoom : DEFAULT_ZOOM,
       minZoom: 0,
       maxZoom: MAX_ZOOM,
       zoomSnap: 0.01,
@@ -117,6 +119,52 @@
     addLogo(map);
     syncUrlState(map, layers, initialState);
     return map;
+  }
+
+  function addHomeButton(map, resetView) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'map-home';
+    button.title = 'Zobrazit všechny body';
+    button.setAttribute('aria-label', button.title);
+    button.disabled = true;
+
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('viewBox', '0 0 24 24');
+    icon.setAttribute('width', '16');
+    icon.setAttribute('height', '16');
+    icon.setAttribute('aria-hidden', 'true');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M3 10.5 12 3l9 7.5M5 9v12h5v-7h4v7h5V9');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', 'currentColor');
+    path.setAttribute('stroke-width', '2');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    icon.append(path);
+    button.append(icon);
+
+    L.DomEvent.disableClickPropagation(button);
+    L.DomEvent.on(button, 'click', event => {
+      L.DomEvent.stop(event);
+      resetView();
+    });
+    map.zoomControl.getContainer().append(button);
+    return button;
+  }
+
+  function showDefaultView(map, bounds) {
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, {
+        // Include the marker dimensions and anchor in the 20px visual margin.
+        paddingTopLeft: [35, 48],
+        paddingBottomRight: [35, 28],
+        maxZoom: 16,
+        animate: false
+      });
+    } else {
+      map.setView(DEFAULT_CENTER, DEFAULT_ZOOM, {animate: false});
+    }
   }
 
   function avoidScaleOverlap(map, scale) {
@@ -227,10 +275,9 @@
     map.getContainer().classList.toggle('show-point-names', map.getZoom() > LABEL_ZOOM_THRESHOLD);
   }
 
-  function loadPoints(map, shouldFitBounds) {
-    $.getJSON('proxy.php')
+  function loadPoints(map, shouldFitBounds, bounds) {
+    return $.getJSON('proxy.php')
       .done(areas => {
-        const bounds = L.latLngBounds([]);
         $.each(areas, (_areaKey, area) => {
           $.each(area.aps, (_pointKey, accessPoint) => {
             const marker = createMarker(map, area, accessPoint);
@@ -240,13 +287,7 @@
           });
         });
         if (shouldFitBounds() && bounds.isValid()) {
-          map.fitBounds(bounds, {
-            // Include the marker dimensions and anchor in the 20px visual margin.
-            paddingTopLeft: [35, 48],
-            paddingBottomRight: [35, 28],
-            maxZoom: 16,
-            animate: false
-          });
+          showDefaultView(map, bounds);
         }
         updateLabelVisibility(map);
       })
@@ -259,9 +300,13 @@
 
   const initialState = readUrlState();
   const map = createMap(initialState);
+  const bounds = L.latLngBounds([]);
+  const homeButton = addHomeButton(map, () => showDefaultView(map, bounds));
   let fitInitialBounds = !initialState.view;
   map.once('movestart', () => { fitInitialBounds = false; });
   map.on('zoomend', () => updateLabelVisibility(map));
   updateLabelVisibility(map);
-  loadPoints(map, () => fitInitialBounds);
+  loadPoints(map, () => fitInitialBounds, bounds).always(() => {
+    homeButton.disabled = false;
+  });
 })();
