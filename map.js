@@ -2,8 +2,54 @@
   'use strict';
 
   const LABEL_ZOOM_THRESHOLD = 14;
+  const MAX_ZOOM = 18;
+  const LAYER_KEYS = ['osm', 'streets', 'satellite', 'light'];
 
-  function createMap() {
+  function readUrlState() {
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    const parts = (params.get('map') || '').split('/');
+    const [zoom, lat, lng] = parts.map(Number);
+    const validView = parts.length === 3 && parts.every(part => part.trim() !== '') &&
+      Number.isInteger(zoom) && zoom >= 0 && zoom <= MAX_ZOOM &&
+      Number.isFinite(lat) && Math.abs(lat) <= 90 &&
+      Number.isFinite(lng) && Math.abs(lng) <= 180;
+
+    return {
+      view: validView ? {center: [lat, lng], zoom} : null,
+      layer: LAYER_KEYS.includes(params.get('layer')) ? params.get('layer') : 'streets'
+    };
+  }
+
+  function syncUrlState(map, layers) {
+    function updateUrl() {
+      const center = map.getCenter().wrap();
+      const layer = LAYER_KEYS.find(key => map.hasLayer(layers[key]));
+      const url = new URL(window.location.href);
+      url.hash = `map=${map.getZoom()}/${center.lat.toFixed(6)}/${center.lng.toFixed(6)}&layer=${layer}`;
+      if (url.href !== window.location.href) {
+        window.history.replaceState(window.history.state, '', url);
+      }
+      map.getContainer().classList.toggle('satellite-map', layer === 'satellite');
+    }
+
+    map.on('moveend baselayerchange', updateUrl);
+    window.addEventListener('hashchange', () => {
+      const state = readUrlState();
+      if (state.view) {
+        map.setView(state.view.center, state.view.zoom, {animate: false});
+      }
+      for (const key of LAYER_KEYS) {
+        if (key !== state.layer && map.hasLayer(layers[key])) {
+          map.removeLayer(layers[key]);
+        }
+      }
+      layers[state.layer].addTo(map);
+      updateUrl();
+    });
+    updateUrl();
+  }
+
+  function createMap(initialState) {
     const bkAttr = ' | Written by <a href="mailto:bkralik@hkfree.org">bkralik</a>';
 
 
@@ -25,16 +71,15 @@
     const mapboxSatellite = L.tileLayer(mbUrl, {id: 'mapbox/satellite-streets-v11', attribution: mbAttr, tileSize: 512, zoomOffset: -1});
     const mapboxLight = L.tileLayer(mbUrl, {id: 'mapbox/light-v11', attribution: mbAttr, tileSize: 512, zoomOffset: -1});
     const osm = L.tileLayer(osmUrl, {attribution: osmAttr});
+    const layers = {osm, streets: mapbox, satellite: mapboxSatellite, light: mapboxLight};
 
     const map = L.map('map', {
       preferCanvas: true,
-      center: [50.2093261, 15.8333789],
-      zoom: 12,
-      layers: [mapbox]
-    });
-
-    map.on('baselayerchange', event => {
-      map.getContainer().classList.toggle('satellite-map', event.layer === mapboxSatellite);
+      center: initialState.view ? initialState.view.center : [50.2093261, 15.8333789],
+      zoom: initialState.view ? initialState.view.zoom : 12,
+      minZoom: 0,
+      maxZoom: MAX_ZOOM,
+      layers: [layers[initialState.layer]]
     });
 
     L.control.scale({maxWidth: 200, metric: true, imperial: false, position: 'bottomleft'}).addTo(map);
@@ -53,6 +98,7 @@
       'MapBox Light': mapboxLight
     }).addTo(map);
 
+    syncUrlState(map, layers);
     return map;
   }
 
@@ -119,7 +165,7 @@
     map.getContainer().classList.toggle('show-point-names', map.getZoom() > LABEL_ZOOM_THRESHOLD);
   }
 
-  function loadPoints(map) {
+  function loadPoints(map, shouldFitBounds) {
     $.getJSON('proxy.php')
       .done(areas => {
         const bounds = L.latLngBounds([]);
@@ -131,7 +177,7 @@
             }
           });
         });
-        if (bounds.isValid()) {
+        if (shouldFitBounds() && bounds.isValid()) {
           map.fitBounds(bounds, {padding: [40, 40], maxZoom: 16, animate: false});
         }
         updateLabelVisibility(map);
@@ -143,8 +189,11 @@
       });
   }
 
-  const map = createMap();
+  const initialState = readUrlState();
+  const map = createMap(initialState);
+  let fitInitialBounds = !initialState.view;
+  map.once('movestart', () => { fitInitialBounds = false; });
   map.on('zoomend', () => updateLabelVisibility(map));
   updateLabelVisibility(map);
-  loadPoints(map);
+  loadPoints(map, () => fitInitialBounds);
 })();
