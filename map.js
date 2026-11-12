@@ -23,6 +23,7 @@
 
     const mapbox = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', attribution: mbAttr, tileSize: 512, zoomOffset: -1});
     const mapboxSatellite = L.tileLayer(mbUrl, {id: 'mapbox/satellite-streets-v11', attribution: mbAttr, tileSize: 512, zoomOffset: -1});
+    const mapboxLight = L.tileLayer(mbUrl, {id: 'mapbox/light-v11', attribution: mbAttr, tileSize: 512, zoomOffset: -1});
     const osm = L.tileLayer(osmUrl, {attribution: osmAttr});
 
     const map = L.map('map', {
@@ -48,7 +49,8 @@
     L.control.layers({
       'OpenStreetMaps': osm,
       'MapBox Streets': mapbox,
-      'MapBox Satellite': mapboxSatellite
+      'MapBox Satellite': mapboxSatellite,
+      'MapBox Light': mapboxLight
     }).addTo(map);
 
     return map;
