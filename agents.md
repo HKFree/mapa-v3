@@ -2,6 +2,7 @@
 
 - Jde o veřejnou mapu pokrytí internetové sítě HKFree.org. Při úpravách dbej na to, aby mapa neprozrazovala zbytečné interní informace.
 - Po každé dokončené změně vytvoř commit v tomto Git repozitáři. Nesouvisející změny uživatele nezahrnuj.
+- Hlavní větev zůstává `master`, včetně GitHub Actions a deploy skriptů.
 - Pokyny potřebné pro další agenty udržuj v tomto souboru `agents.md`.
 - Přihlašovací údaje z lokálního `.env` neukládej do Gitu ani nevypisuj do výstupů.
 
@@ -33,3 +34,12 @@
 - Serverové integrační testy spusť přes `composer test` (nebo `php tests/run.php` po `composer install`). Vyžadují PHP CLI, `proc_open`, lokální TCP sockety a podporu symlinků; nepřidávají další závislosti.
 - Testy spouštějí vlastní dočasné PHP servery a lokální náhradu UserDB. Používají syntetickou `.env`, nečtou skutečné přihlašovací údaje a nevolají externí API. Nesmí měnit pracovní `.env` ani zastavovat vývojový server.
 - Prohlížečové testy zatím nepřidávej; uživatel požaduje pouze serverové testy.
+- `composer test:deploy` ověřuje nasazovací skript s falešným Docker CLI a dočasnými Git repozitáři. Docker nespouští.
+
+## Docker a nasazení
+
+- Na tomto vývojovém serveru Docker nespouštěj ani nesestavuj obrazy. Sestavení a test skutečného obrazu (`composer test:production` s `TEST_IMAGE`) patří do GitHub Actions.
+- Produkce používá jeden kontejner PHP 8.4 + Apache a hostitelský Apache pro HTTPS. Compose publikuje pouze `127.0.0.1:${WEB_PORT:-8088}`. Nepotřebujeme volume ani databázi.
+- CI na `master` po testech publikuje do GHCR `latest` a `sha-<SHA>`. Volitelný autodeploy zapíná repository variable `DEPLOY_ENABLED=true`; připojuje se jako `deploy` do `/opt/web-mapa`. Server pouze stahuje obrazy, `.env` se nepřepisuje.
+- Zachovej serializaci běhů, ověření SSH host key, odmítnutí lokálních změn, kontrolu revize obrazu a HTTP healthcheck nezávislý na UserDB. Po selhání aktivace neoznamuj automatický rollback.
+- Provozní návod je v `README.md`; při změně deploye ho aktualizuj. Push a skutečné nasazení dělej jen na výslovný požadavek uživatele.
