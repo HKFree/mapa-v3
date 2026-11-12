@@ -1,3 +1,15 @@
+<?php
+
+try {
+    $config = require __DIR__ . '/bootstrap.php';
+} catch (Throwable $exception) {
+    http_response_code(500);
+    header('Content-Type: text/plain; charset=utf-8');
+    echo 'Konfigurace mapy není dostupná.';
+    exit;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -29,6 +41,10 @@
 <div id="map"></div>
 <div id="map-error" class="map-error" role="alert" hidden></div>
 
+<script id="map-config" type="application/json"><?= json_encode(
+    ['mapboxToken' => $config['MAPBOX_TOKEN']],
+    JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR
+) ?></script>
 <script src="map.js"></script>
 
 </body>

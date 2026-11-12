@@ -13,7 +13,8 @@
 - Před opětovným spuštěním ověř, zda server již neposlouchá. Log je mimo repozitář v `/tmp/mapa-v3-php-18080.log`.
 - Backend `proxy.php` vyžaduje Composer závislosti v `vendor/` a konfiguraci UserDB z prostředí nebo lokálního `.env`; závislosti nainstaluj pomocí `composer install`.
 
-- Konfigurace: `USERDB_URL`, `USERDB_USER`, `USERDB_API_KEY`; proměnné procesu mají přednost před `.env`. Vzor je `.env.example`.
+- Konfigurace: `USERDB_URL`, `USERDB_USER`, `USERDB_API_KEY`, `MAPBOX_TOKEN`; proměnné procesu mají přednost před `.env`. Vzor je `.env.example`.
+- Mapbox token je veřejný prohlížečový token. Nastavuj ho v `.env` nebo prostředí, ne ve zdrojovém kódu. `index.php` předává JavaScriptu pouze tento token přes bezpečně zakódovaný JSON v `#map-config`; údaje UserDB do HTML nepatří.
 - Vývojový server vždy spouštěj s `router.php`, aby nevydával `.env` a další neveřejné soubory. Apache používá přiložený `.htaccess`; u jiného serveru nastav odpovídající zákaz přístupu.
 - jQuery prozatím zachovej. Údaje z API v popiscích a popupech vkládej přes DOM (`textContent`, `createTextNode`), nikoli spojováním HTML řetězců. Odkazy sestavuj přes DOM s pevným schématem `mailto:`.
 - `proxy.php` vrací pouze veřejná pole: oblast má `email`, `aps` (jen `jmeno`, `gps`) a `admins` (jen `nick`). Pole vytvářej explicitně a seznamy přečísluj, aby neunikala interní ID ani v klíčích. Body bez GPS a oblasti bez zobrazitelných bodů vynechávej.

@@ -6,7 +6,7 @@ Dotenv\Dotenv::createImmutable(__DIR__)->safeLoad();
 
 // Container environment variables take precedence over the local .env file.
 $config = [];
-foreach (['USERDB_URL', 'USERDB_USER', 'USERDB_API_KEY'] as $name) {
+foreach (['USERDB_URL', 'USERDB_USER', 'USERDB_API_KEY', 'MAPBOX_TOKEN'] as $name) {
     $value = getenv($name);
     if ($value === false) {
         $value = $_ENV[$name] ?? null;
