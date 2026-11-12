@@ -115,8 +115,12 @@
         })}).addTo(map);
 
         omail = "oblast" + this["id"] + "@hkfree.org";
-        ospravci = Object.values(this["admins"]).map((ele) => ele["nick"]).join(", ");
-        m.bindPopup('<b>' + ap["jmeno"] + '</b><br>Správci: ' + ospravci + '<br>Kontakt: <a href="mailto:' + omail + '">' + omail + '</a>');
+        if (Object.keys(this["admins"]).length > 0) {
+          ospravci = "Správci: " + Object.values(this["admins"]).map((ele) => ele["nick"]).join(", ");
+        } else {
+          ospravci = "Oblast nemá správce.";
+        }
+        m.bindPopup('<b>' + ap["jmeno"] + '</b><br>' + ospravci + '<br>Kontakt: <a href="mailto:' + omail + '">' + omail + '</a>');
 
         mapMarkers.push(m);
       }.bind(oblast));
