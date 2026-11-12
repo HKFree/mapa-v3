@@ -18,4 +18,5 @@
 - Vývojový server vždy spouštěj s `router.php`, aby nevydával `.env` a další neveřejné soubory. Apache používá přiložený `.htaccess`; u jiného serveru nastav odpovídající zákaz přístupu.
 - jQuery prozatím zachovej. Údaje z API v popiscích a popupech vkládej přes DOM (`textContent`, `createTextNode`), nikoli spojováním HTML řetězců. Odkazy sestavuj přes DOM s pevným schématem `mailto:`.
 - Bílé zvýraznění ikon a popisků zobrazuj pouze na podkladu Mapbox Satellite pomocí třídy `satellite-map`. Stín ikony má sledovat neprůhledné pixely (`drop-shadow`), nikoli vyplňovat průhledné pozadí obrázku.
+- Po prvním načtení bodů nastav výřez přes `fitBounds` tak, aby zahrnoval všechny vytvořené značky s odsazením od okrajů. Při prázdných datech zachovej výchozí výřez; u jediného bodu omez přiblížení na zoom 16.
 - `proxy.php` vrací pouze veřejná pole: oblast má `email`, `aps` (jen `jmeno`, `gps`) a `admins` (jen `nick`). Pole vytvářej explicitně a seznamy přečísluj, aby neunikala interní ID ani v klíčích. Body bez GPS a oblasti bez zobrazitelných bodů vynechávej.

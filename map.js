@@ -112,6 +112,7 @@
     }).addTo(map);
 
     marker.bindPopup(createPopupContent(area, accessPoint.jmeno));
+    return marker;
   }
 
   function updateLabelVisibility(map) {
@@ -121,11 +122,18 @@
   function loadPoints(map) {
     $.getJSON('proxy.php')
       .done(areas => {
+        const bounds = L.latLngBounds([]);
         $.each(areas, (_areaKey, area) => {
           $.each(area.aps, (_pointKey, accessPoint) => {
-            createMarker(map, area, accessPoint);
+            const marker = createMarker(map, area, accessPoint);
+            if (marker) {
+              bounds.extend(marker.getLatLng());
+            }
           });
         });
+        if (bounds.isValid()) {
+          map.fitBounds(bounds, {padding: [40, 40], maxZoom: 16, animate: false});
+        }
         updateLabelVisibility(map);
       })
       .fail(() => {
