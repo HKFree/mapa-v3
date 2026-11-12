@@ -52,7 +52,12 @@ try {
     };
     $respond(json_encode([42 => [
         'id' => 7, 'private' => 'AREA-SECRET',
-        'aps' => [91 => ['id' => 91, 'jmeno' => 'Vysílač', 'gps' => '50.2,15.8', 'ulice_cp' => 'ADDRESS-SECRET'], 92 => ['gps' => null]],
+        'aps' => [
+            91 => ['id' => 91, 'aktivni' => 1, 'jmeno' => 'Vysílač', 'gps' => '50.2,15.8', 'ulice_cp' => 'ADDRESS-SECRET'],
+            92 => ['aktivni' => 1, 'gps' => null],
+            93 => ['aktivni' => 0, 'jmeno' => 'Inactive', 'gps' => '50.3,15.9'],
+            94 => ['jmeno' => 'Missing activity flag', 'gps' => '50.3,15.9'],
+        ],
         'admins' => [23 => ['id' => 23, 'nick' => 'Správce', 'email' => 'EMAIL-SECRET', 'role' => 'ROLE-SECRET']],
     ]], JSON_THROW_ON_ERROR));
     dockerCommand(['network', 'create', $name]);

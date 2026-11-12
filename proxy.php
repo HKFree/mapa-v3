@@ -40,6 +40,9 @@ try {
             if (!is_array($point)) {
                 throw new UnexpectedValueException('Invalid access point.');
             }
+            if (($point['aktivni'] ?? null) !== 1) {
+                continue;
+            }
             if (empty($point['gps'])) {
                 continue;
             }

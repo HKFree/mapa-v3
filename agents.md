@@ -27,7 +27,7 @@
 - Parametr `layer` přidej až po změně podkladu uživatelem, nebo pokud už byl platně uveden v otevřeném odkazu. Samotné načtení, posun či zoom jej nepřidává.
 - Zoom může být desetinný (`zoomSnap: 0.01`), což umožňuje těsný úvodní výřez. Zachovej desetinný zoom i při ukládání a obnovování URL. Odsazení výřezu počítá také s velikostí a ukotvením značek.
 - Po prvním načtení bodů nastav výřez přes `fitBounds`, pouze pokud odkaz neobsahuje platný pohled a uživatel se mezitím nepohnul mapou. Zahrň všechny vytvořené značky s odsazením od okrajů. Při prázdných datech zachovej výchozí výřez; u jediného bodu omez přiblížení na zoom 16.
-- `proxy.php` vrací pouze veřejná pole: oblast má `email`, `aps` (jen `jmeno`, `gps`) a `admins` (jen `nick`). Pole vytvářej explicitně a seznamy přečísluj, aby neunikala interní ID ani v klíčích. Body bez GPS a oblasti bez zobrazitelných bodů vynechávej.
+- `proxy.php` vrací pouze veřejná pole: oblast má `email`, `aps` (jen `jmeno`, `gps`) a `admins` (jen `nick`). Pole vytvářej explicitně a seznamy přečísluj, aby neunikala interní ID ani v klíčích. Zobrazuj jen AP s celočíselným `aktivni === 1` a GPS; chybějící příznak není aktivní. Oblasti bez zobrazitelných bodů vynechávej.
 
 ## Testy
 

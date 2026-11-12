@@ -1,6 +1,6 @@
 # HKFree.org mapa
 
-Veřejná mapa bodů sítě. PHP proxy vybírá z UserDB jen údaje zobrazované na mapě. Klient používá Leaflet a jQuery. Hlavní větev je **`master`**.
+Veřejná mapa bodů sítě. PHP proxy vybírá z UserDB jen údaje zobrazované na mapě. Zahrnuje pouze AP s `aktivni` rovným číslu `1` a vyplněnou GPS; oblasti bez takových bodů vynechává. Klient používá Leaflet a jQuery. Hlavní větev je **`master`**.
 
 ## Vývoj a serverové testy
 

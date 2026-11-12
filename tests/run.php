@@ -148,11 +148,31 @@ test('proxy exposes only public fields, reindexes IDs, preserves text and uses e
 });
 
 test('proxy omits points without GPS and areas without displayed points', function () use ($http, $area, $json, $expected): void {
-    $area['aps'][92] = ['jmeno' => 'Hidden', 'gps' => null];
-    $area['aps'][93] = ['jmeno' => 'Hidden', 'gps' => ''];
-    $area['aps'][94] = ['jmeno' => 'Hidden'];
-    upstream($json([$area, ['id' => 8, 'aps' => [['gps' => null]], 'admins' => []], ['id' => 9, 'aps' => [], 'admins' => []]]));
+    $area['aps'][92] = ['aktivni' => 1, 'jmeno' => 'Hidden', 'gps' => null];
+    $area['aps'][93] = ['aktivni' => 1, 'jmeno' => 'Hidden', 'gps' => ''];
+    $area['aps'][94] = ['aktivni' => 1, 'jmeno' => 'Hidden'];
+    upstream($json([$area, ['id' => 8, 'aps' => [['aktivni' => 1, 'gps' => null]], 'admins' => []], ['id' => 9, 'aps' => [], 'admins' => []]]));
     same($expected, json_decode((string) $http->get('/proxy.php')->getBody(), true, 512, JSON_THROW_ON_ERROR));
+});
+
+test('proxy exposes only points with integer aktivni=1', function () use ($http, $area, $json, $expected): void {
+    foreach ([0, 2, null, false, true, '1', '0', [], [1]] as $index => $status) {
+        $area['aps'][100 + $index] = ['aktivni' => $status, 'jmeno' => 'Hidden', 'gps' => '50.3,15.9'];
+    }
+    $area['aps'][200] = ['jmeno' => 'Missing activity flag', 'gps' => '50.3,15.9'];
+    $area['aps'][201] = ['aktivni' => 0, 'jmeno' => [], 'gps' => ['PRIVATE']];
+    upstream($json([$area]));
+    $response = $http->get('/proxy.php');
+    same(200, $response->getStatusCode());
+    same($expected, json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR));
+});
+
+test('proxy omits areas with no active points', function () use ($http, $area, $json): void {
+    $area['aps'][91]['aktivni'] = 0;
+    upstream($json([$area]));
+    $response = $http->get('/proxy.php');
+    same(200, $response->getStatusCode());
+    same('[]', (string) $response->getBody());
 });
 
 test('proxy supports empty results and areas without administrators', function () use ($http, $area, $json, $expected): void {
