@@ -10,7 +10,7 @@
     const parts = (params.get('map') || '').split('/');
     const [zoom, lat, lng] = parts.map(Number);
     const validView = parts.length === 3 && parts.every(part => part.trim() !== '') &&
-      Number.isInteger(zoom) && zoom >= 0 && zoom <= MAX_ZOOM &&
+      Number.isFinite(zoom) && zoom >= 0 && zoom <= MAX_ZOOM &&
       Number.isFinite(lat) && Math.abs(lat) <= 90 &&
       Number.isFinite(lng) && Math.abs(lng) <= 180;
 
@@ -25,7 +25,8 @@
       const center = map.getCenter().wrap();
       const layer = LAYER_KEYS.find(key => map.hasLayer(layers[key]));
       const url = new URL(window.location.href);
-      url.hash = `map=${map.getZoom()}/${center.lat.toFixed(6)}/${center.lng.toFixed(6)}&layer=${layer}`;
+      const zoom = Number(map.getZoom().toFixed(2));
+      url.hash = `map=${zoom}/${center.lat.toFixed(6)}/${center.lng.toFixed(6)}&layer=${layer}`;
       if (url.href !== window.location.href) {
         window.history.replaceState(window.history.state, '', url);
       }
@@ -79,6 +80,7 @@
       zoom: initialState.view ? initialState.view.zoom : 12,
       minZoom: 0,
       maxZoom: MAX_ZOOM,
+      zoomSnap: 0.01,
       layers: [layers[initialState.layer]]
     });
 
@@ -178,7 +180,13 @@
           });
         });
         if (shouldFitBounds() && bounds.isValid()) {
-          map.fitBounds(bounds, {padding: [20, 20], maxZoom: 16, animate: false});
+          map.fitBounds(bounds, {
+            // Include the marker dimensions and anchor in the 20px visual margin.
+            paddingTopLeft: [35, 48],
+            paddingBottomRight: [35, 28],
+            maxZoom: 16,
+            animate: false
+          });
         }
         updateLabelVisibility(map);
       })
