@@ -8,3 +8,7 @@ composer.phar
 
 !.gitignore
 !.htaccess
+
+.env
+.env.*
+!.env.example

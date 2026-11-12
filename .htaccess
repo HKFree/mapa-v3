@@ -1,0 +1,3 @@
+<FilesMatch "^(\.env.*|bootstrap\.php|router\.php)$">
+    Require all denied
+</FilesMatch>
