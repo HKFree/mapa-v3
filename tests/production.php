@@ -26,10 +26,11 @@ function dockerCommand(array $arguments, bool $check = true): string
     return trim($output . ($check ? '' : $error));
 }
 
-function expectSame($expected, $actual): void
+function expectSame($expected, $actual, string $context = ''): void
 {
     if ($expected !== $actual) {
-        throw new RuntimeException('Expected ' . var_export($expected, true) . ', got ' . var_export($actual, true));
+        throw new RuntimeException(($context === '' ? '' : $context . ': ') .
+            'Expected ' . var_export($expected, true) . ', got ' . var_export($actual, true));
     }
 }
 
@@ -99,7 +100,12 @@ try {
     echo "PASS production PHP, UserDB authentication and public-field filtering\n";
 
     foreach (['/index.php', '/map.js', '/map.css', '/favicon.ico', '/icons/node_2_1.png', '/icons/hkfree-logo-druzstvo.png'] as $path) {
-        expectSame(200, $http->get($path)->getStatusCode());
+        $response = $http->get($path);
+        expectSame(200, $response->getStatusCode(), $path);
+        if (strpos($path, '/icons/') === 0) {
+            expectSame(hash_file('sha256', dirname(__DIR__) . $path),
+                hash('sha256', (string) $response->getBody()), $path . ' content');
+        }
     }
     foreach (['/.env', '/.env.example', '/%2eenv', '/.git/config', '/bootstrap.php', '/vendor/autoload.php',
         '/composer.lock', '/router.php', '/tests/run.php', '/deploy/healthcheck.php', '/proxy.php/extra', '/icons/'] as $path) {

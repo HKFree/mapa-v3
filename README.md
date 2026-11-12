@@ -94,6 +94,8 @@ Při jiném `WEB_PORT` změňte port v příkazech i v Apache. První HTTP kontr
 
 Compose publikuje HTTP pouze na `127.0.0.1:${WEB_PORT}`. Předpokládá Apache2 přímo na stejném hostiteli. HTTPS a certifikát zůstávají mimo kontejner; v kontejneru běží samostatný Apache s PHP a omezenými veřejnými cestami.
 
+Vnitřní konfigurace `deploy/apache-app.conf` explicitně mapuje `/icons/` do obrázků aplikace. Toto pravidlo zachovejte: výchozí Debian konfigurace Apache používá stejnou URL pro své systémové ikony.
+
 Použijte vzor [`deploy/apache2.conf`](deploy/apache2.conf). Nahraďte `ServerName`, `X-Forwarded-Host`, cesty k certifikátu a případně port backendu. Existující přesměrování HTTP → HTTPS ponechte. Pokud už VirtualHost pro doménu existuje, zapracujte pravidla do něj.
 
 Na Debianu/Ubuntu správce povolí moduly a načte nakonfigurovaný VirtualHost:

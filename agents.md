@@ -40,6 +40,7 @@
 
 - Na tomto vývojovém serveru Docker nespouštěj ani nesestavuj obrazy. Sestavení a test skutečného obrazu (`composer test:production` s `TEST_IMAGE`) patří do GitHub Actions.
 - Produkce používá jeden kontejner PHP 8.4 + Apache a hostitelský Apache pro HTTPS. Compose publikuje pouze `127.0.0.1:${WEB_PORT:-8088}`. Nepotřebujeme volume ani databázi.
+- Ve vnitřním VirtualHostu zachovej explicitní `Alias /icons/ /var/www/html/icons/`; jinak může výchozí Debian alias směrovat obrázky mapy do systémových ikon Apache.
 - CI na `master` po testech publikuje do GHCR `latest` a `sha-<SHA>`. Volitelný autodeploy zapíná repository variable `DEPLOY_ENABLED=true`; připojuje se jako `deploy` do `/opt/web-mapa`. Server pouze stahuje obrazy, `.env` se nepřepisuje.
 - Zachovej serializaci běhů, ověření SSH host key, odmítnutí lokálních změn, kontrolu revize obrazu a HTTP healthcheck nezávislý na UserDB. Po selhání aktivace neoznamuj automatický rollback.
 - Provozní návod je v `README.md`; při změně deploye ho aktualizuj. Push a skutečné nasazení dělej jen na výslovný požadavek uživatele.
