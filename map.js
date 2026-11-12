@@ -64,7 +64,7 @@
       })
     }).addTo(map);
 
-    const email = 'oblast' + area.id + '@hkfree.org';
+    const email = area.email;
     const admins = Object.values(area.admins);
     const adminDescription = admins.length > 0
       ? 'Správci: ' + admins.map(admin => admin.nick).join(', ')

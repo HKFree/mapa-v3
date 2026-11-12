@@ -15,4 +15,5 @@
 
 - Konfigurace: `USERDB_URL`, `USERDB_USER`, `USERDB_API_KEY`; proměnné procesu mají přednost před `.env`. Vzor je `.env.example`.
 - Vývojový server vždy spouštěj s `router.php`, aby nevydával `.env` a další neveřejné soubory. Apache používá přiložený `.htaccess`; u jiného serveru nastav odpovídající zákaz přístupu.
-- jQuery prozatím zachovej. Výběr veřejných polí API a bezpečné skládání HTML jsou odložené na samostatnou úpravu.
+- jQuery prozatím zachovej. Bezpečné skládání HTML je odložené na samostatnou úpravu.
+- `proxy.php` vrací pouze veřejná pole: oblast má `email`, `aps` (jen `jmeno`, `gps`) a `admins` (jen `nick`). Pole vytvářej explicitně a seznamy přečísluj, aby neunikala interní ID ani v klíčích. Body bez GPS a oblasti bez zobrazitelných bodů vynechávej.
