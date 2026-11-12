@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+
+// Fake Docker CLI used only by deploy tests; no daemon or registry is contacted.
+if (PHP_SAPI !== 'cli' || !getenv('MOCK_DOCKER_LOG')) {
+    exit(1);
+}
+$args = array_slice($argv, 1);
+file_put_contents(getenv('MOCK_DOCKER_LOG'), json_encode($args) . "\n", FILE_APPEND);
+if ($args === ['info']) {
+    exit(0);
+}
+if (array_slice($args, 0, 2) === ['image', 'inspect']) {
+    echo getenv('MOCK_IMAGE_REVISION'), "\n";
+    exit(0);
+}
+if (($args[0] ?? '') === 'compose') {
+    if ($args === ['compose', 'config', '--images']) {
+        echo "ghcr.io/example/mapa:latest\n";
+        exit(0);
+    }
+    $operation = $args[1] ?? '';
+    if (in_array($operation, ['config', 'pull', 'run', 'up', 'exec'], true)) {
+        exit(getenv('MOCK_FAIL') === $operation ? 1 : 0);
+    }
+}
+fwrite(STDERR, "Unexpected Docker command\n");
+exit(1);

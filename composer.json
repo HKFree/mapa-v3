@@ -5,6 +5,7 @@
     },
     "scripts": {
         "test": "@php tests/run.php",
+        "test:deploy": "@php tests/deploy.php",
         "test:production": "@php tests/production.php"
     }
 }
