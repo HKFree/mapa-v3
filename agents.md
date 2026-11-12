@@ -19,6 +19,7 @@
 - jQuery prozatím zachovej. Údaje z API v popiscích a popupech vkládej přes DOM (`textContent`, `createTextNode`), nikoli spojováním HTML řetězců. Odkazy sestavuj přes DOM s pevným schématem `mailto:`.
 - Bílé zvýraznění ikon a popisků zobrazuj pouze na podkladu Mapbox Satellite pomocí třídy `satellite-map`. Stín ikony má sledovat neprůhledné pixely (`drop-shadow`), nikoli vyplňovat průhledné pozadí obrázku.
 - URL ukládá pohled a podklad jako `#map=zoom/lat/lng&layer=streets` (podklady: `osm`, `streets`, `satellite`, `light`). Aktualizuj ji přes `replaceState`, aby posuny nezaplňovaly historii; parametry před použitím ověřuj.
+- Parametr `layer` přidej až po změně podkladu uživatelem, nebo pokud už byl platně uveden v otevřeném odkazu. Samotné načtení, posun či zoom jej nepřidává.
 - Zoom může být desetinný (`zoomSnap: 0.01`), což umožňuje těsný úvodní výřez. Zachovej desetinný zoom i při ukládání a obnovování URL. Odsazení výřezu počítá také s velikostí a ukotvením značek.
 - Po prvním načtení bodů nastav výřez přes `fitBounds`, pouze pokud odkaz neobsahuje platný pohled a uživatel se mezitím nepohnul mapou. Zahrň všechny vytvořené značky s odsazením od okrajů. Při prázdných datech zachovej výchozí výřez; u jediného bodu omez přiblížení na zoom 16.
 - `proxy.php` vrací pouze veřejná pole: oblast má `email`, `aps` (jen `jmeno`, `gps`) a `admins` (jen `nick`). Pole vytvářej explicitně a seznamy přečísluj, aby neunikala interní ID ani v klíčích. Body bez GPS a oblasti bez zobrazitelných bodů vynechávej.

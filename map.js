@@ -16,26 +16,42 @@
 
     return {
       view: validView ? {center: [lat, lng], zoom} : null,
-      layer: LAYER_KEYS.includes(params.get('layer')) ? params.get('layer') : 'streets'
+      layer: LAYER_KEYS.includes(params.get('layer')) ? params.get('layer') : 'streets',
+      hasLayer: LAYER_KEYS.includes(params.get('layer'))
     };
   }
 
-  function syncUrlState(map, layers) {
+  function syncUrlState(map, layers, initialState) {
+    let includeLayer = initialState.hasLayer;
+    let restoringUrl = false;
+
     function updateUrl() {
+      if (restoringUrl) {
+        return;
+      }
       const center = map.getCenter().wrap();
       const layer = LAYER_KEYS.find(key => map.hasLayer(layers[key]));
       const url = new URL(window.location.href);
       const zoom = Number(map.getZoom().toFixed(2));
-      url.hash = `map=${zoom}/${center.lat.toFixed(6)}/${center.lng.toFixed(6)}&layer=${layer}`;
+      url.hash = `map=${zoom}/${center.lat.toFixed(6)}/${center.lng.toFixed(6)}` +
+        (includeLayer ? `&layer=${layer}` : '');
       if (url.href !== window.location.href) {
         window.history.replaceState(window.history.state, '', url);
       }
       map.getContainer().classList.toggle('satellite-map', layer === 'satellite');
     }
 
-    map.on('moveend baselayerchange', updateUrl);
+    map.on('moveend', updateUrl);
+    map.on('baselayerchange', () => {
+      if (!restoringUrl) {
+        includeLayer = true;
+      }
+      updateUrl();
+    });
     window.addEventListener('hashchange', () => {
       const state = readUrlState();
+      restoringUrl = true;
+      includeLayer = state.hasLayer;
       if (state.view) {
         map.setView(state.view.center, state.view.zoom, {animate: false});
       }
@@ -45,6 +61,7 @@
         }
       }
       layers[state.layer].addTo(map);
+      restoringUrl = false;
       updateUrl();
     });
     updateUrl();
@@ -100,7 +117,7 @@
       'MapBox Light': mapboxLight
     }).addTo(map);
 
-    syncUrlState(map, layers);
+    syncUrlState(map, layers, initialState);
     return map;
   }
 
