@@ -5,7 +5,7 @@
   const MAX_ZOOM = 18;
   const DEFAULT_CENTER = [50.2093261, 15.8333789];
   const DEFAULT_ZOOM = 12;
-  const LAYER_KEYS = ['osm', 'streets', 'satellite', 'light'];
+  const LAYER_KEYS = ['osm', 'streets', 'satellite', 'hybrid', 'light'];
 
   function readUrlState() {
     const params = new URLSearchParams(window.location.hash.slice(1));
@@ -40,7 +40,7 @@
       if (url.href !== window.location.href) {
         window.history.replaceState(window.history.state, '', url);
       }
-      map.getContainer().classList.toggle('satellite-map', layer === 'satellite');
+      map.getContainer().classList.toggle('satellite-map', layer === 'satellite' || layer === 'hybrid');
     }
 
     map.on('moveend', updateUrl);
@@ -84,10 +84,11 @@
     const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
     const mapbox = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', attribution: mbAttr, tileSize: 512, zoomOffset: -1});
-    const mapboxSatellite = L.tileLayer(mbUrl, {id: 'mapbox/satellite-streets-v11', attribution: mbAttr, tileSize: 512, zoomOffset: -1});
+    const mapboxSatellite = L.tileLayer(mbUrl, {id: 'mapbox/satellite-v9', attribution: mbAttr, tileSize: 512, zoomOffset: -1});
+    const mapboxHybrid = L.tileLayer(mbUrl, {id: 'mapbox/satellite-streets-v12', attribution: mbAttr, tileSize: 512, zoomOffset: -1});
     const mapboxLight = L.tileLayer(mbUrl, {id: 'mapbox/light-v11', attribution: mbAttr, tileSize: 512, zoomOffset: -1});
     const osm = L.tileLayer(osmUrl, {attribution: osmAttr});
-    const layers = {osm, streets: mapbox, satellite: mapboxSatellite, light: mapboxLight};
+    const layers = {osm, streets: mapbox, satellite: mapboxSatellite, hybrid: mapboxHybrid, light: mapboxLight};
 
     const map = L.map('map', {
       preferCanvas: true,
@@ -113,6 +114,7 @@
       'OpenStreetMaps': osm,
       'MapBox Streets': mapbox,
       'MapBox Satellite': mapboxSatellite,
+      'Mapbox hybrid': mapboxHybrid,
       'MapBox Light': mapboxLight
     }).addTo(map);
 
